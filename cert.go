@@ -101,6 +101,11 @@ func (m *mkcert) makeCert(hosts []string) {
 		tpl.Subject.CommonName = hosts[0]
 	}
 
+	if os.Getenv("LEGACY_CERT_CN") == "1" {
+		tpl.Subject.CommonName = hosts[0]
+		log.Printf("\nOverriding common name to %s, this behavior is deprecated\n", hosts[0])
+	}
+
 	cert, err := x509.CreateCertificate(rand.Reader, tpl, m.caCert, pub, m.caKey)
 	fatalIfErr(err, "failed to generate certificate")
 
